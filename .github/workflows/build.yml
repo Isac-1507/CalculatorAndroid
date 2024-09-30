@@ -100,9 +100,11 @@ jobs:
         
       - name: Create Tag and Release
         run: |
-            git tag ${{ github.ref }}
-            git push origin ${{ github.ref }}
-            gh release create ${{ github.ref }} --repo Isac-1507/CalcAndroidReleases --title "Release ${{ github.ref }}" --notes "Release .aab" ./android/app/build/outputs/bundle/release/app-release-signed.aab
+            TAG_NAME=${{ github.ref}}
+            TAG_NAME=${TAG_NAME#refs/tags/}
+            git tag $TAG_NAME
+            git push origin $TAG_NAME
+            gh release create $TAG_NAME --repo Isac-1507/CalcAndroidReleases --title "Release ${{ github.ref }}" --notes "Release .aab" ./android/app/build/outputs/bundle/release/app-release-signed.aab
 
 
       # - name: Build Release
