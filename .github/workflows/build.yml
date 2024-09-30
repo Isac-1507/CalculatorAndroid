@@ -96,7 +96,7 @@ jobs:
             git config --global user.name 'github-actions'
             git config --global user.email 'github-actions@github.com'
             git tag ${{ github.ref }}
-            git push https://x-access-token:${{ secrets.TARGET_REPO_TOKEN }}@github.com/private-owner/private-repo.git ${{ github.ref }}
+            git push https://x-access-token:${{ secrets.TARGET_REPO_TOKEN }}@github.com/Isac-1507/CalcAndroidReleases.git ${{ github.ref }}
     
       - name: Create private release.
         id: create_private_release
