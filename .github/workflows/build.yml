@@ -80,18 +80,6 @@ jobs:
           draft: false
           prerelease: true
 
-      - name: Upload Release Asset .aab
-        id: upload-release-asset-aab
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./android/app/build/outputs/bundle/release/app-release-signed.aab
-          # Customize the asset name. If not specified, the file name is used.
-          asset_name: app-release-signed.aab
-          asset_content_type: application/zip
-
       - name: Upload Release Asset .apk
         id: upload-release-asset-apk
         uses: actions/upload-release-asset@v1
@@ -103,6 +91,29 @@ jobs:
           # Customize the asset name. If not specified, the file name is used.
           asset_name: app-debug.apk
           asset_content_type: application/vnd.android.package-archive
+
+      - name: Create private release.
+        id: create_private_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TARGET_REPO_TOKEN}}
+        with:
+          owner: Isac-1507
+          repo: CalcAndroidReleases
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      # Upload to private repository
+      - name: Upload .aab to Private Repository
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TARGET_REPO_TOKEN}}
+        with:
+          upload_url: ${{ steps.create_private_release.outputs.upload_url }}
+          asset_path: ./android/app/build/outputs/bundle/release/app-release-signed.aab
+          asset_name: app-release-signed.aab
+          asset_content_type: application/zip
 
       # - name: Build Release
       #   shell: bash
