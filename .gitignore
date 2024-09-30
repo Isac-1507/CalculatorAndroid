@@ -23,3 +23,5 @@ vite.config.ts.timestamp-*
 #Keystore
 release.jks
 release.jks.b64
+# Build Folder
+android
