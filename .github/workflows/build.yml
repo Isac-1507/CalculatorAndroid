@@ -91,7 +91,13 @@ jobs:
           # Customize the asset name. If not specified, the file name is used.
           asset_name: app-debug.apk
           asset_content_type: application/vnd.android.package-archive
-
+      - name: Create Tag in Private Repo
+        run: |
+            git config --global user.name 'github-actions'
+            git config --global user.email 'github-actions@github.com'
+            git tag ${{ github.ref }}
+            git push https://x-access-token:${{ secrets.TARGET_REPO_TOKEN }}@github.com/private-owner/private-repo.git ${{ github.ref }}
+    
       - name: Create private release.
         id: create_private_release
         uses: actions/create-release@v1
