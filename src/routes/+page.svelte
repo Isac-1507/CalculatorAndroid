@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-
+  import { fit, parent_style } from '@leveluptuts/svelte-fit'
   // Variable to store the number to be displayed
   let display_number = ''
 
@@ -10,7 +10,6 @@
 
   // Function to clear the display_number
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const clear = () => (display_number = '')
 
   const backspace = () => (display_number = display_number.slice(0, -1))
   // Variables to store the operand, result, and operator
@@ -18,6 +17,7 @@
   let result
   let operator
 
+  const clear = () => (display_number = '', result = null, operand = null, operator = null )
   // Array of valid operators
   let operators = ['+', '-', '*', '/', 'x']
 
@@ -90,12 +90,14 @@
     })
   })
 </script>
-
+<!-- svelte-ignore a11y-missing-attribute -->
+<html>
 <body style="background-color: #323232;">
   <div class="container">
-    <div class="display">
-      {display_number.length < 23 ? display_number : display_number.substring(0, 23)}
+    <div class="display" use:fit={{max_size:50}}>
+      {display_number.length < 12 ? display_number : display_number.substring(0, 12)}
     </div>
+    <div class="buttons-container">
     <div class="buttons">
       <button on:click={select(7)}>7</button>
       <button on:click={select(8)}>8</button>
@@ -118,68 +120,122 @@
       <div class="spacer"></div>
       <button on:click={backspace} class="clear">←</button>
     </div>
+    </div>
   </div>
 </body>
-
+</html>
 <style>
-  .container {
-    display: inline-block;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    background: #323232;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Prevent scrolling */
+  background-color: #323232; /* Set the background color */
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Align items to the top */
+  width: 100vw; /* Make the container take the full width of the viewport */
+  height: 100vh; /* Make the container take the full height of the viewport */
+  box-sizing: border-box; /* Include padding and border in the element's total width */
+}
+
+.display {
+  container-name: display;
+  background-color: #000;
+  margin-top: auto;
+  margin-bottom: 0%;
+  font-size: auto;
+  border: 1px solid #ccc;
+  height: 10%; /* Fixed height for the display */
+  padding: 10px;
+  width: 95%; /* Make the display take the full width of the container */
+  text-align: right;
+  border-radius: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #ccc;
+  box-sizing: border-box; /* Include padding and border in the element's total width */
+  display: flex;
+  align-items: center; /* Center text vertically */
+  justify-content: flex-end; /* Align text to the right */
+}
+
+.buttons-container {
+  width: 100%; /* Make the buttons container take the full width of the container */
+  height: 50%; /* Fixed height for the buttons area */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Each column will take an equal fraction of the available space */
+  gap: 5px;
+  width: 95%; /* Make the grid take the full width of the buttons container */
+  height: 95%; /* Make the grid take the full height of the buttons container */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+button {
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+  border-radius: 90px;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  aspect-ratio: 1 / 1; /* Ensure buttons are square */
+  width: 100%; /* Ensure buttons take the full width of their grid cell */
+  height: 100%; /* Ensure buttons take the full height of their grid cell */
+}
+
+.operator {
+  background: #878787;
+  border: 1px solid #000;
+}
+
+.equals {
+  background: #e7a932;
+}
+
+.clear {
+  border: 0px solid #000;
+  background: red;
+}
+
+.operator:hover {
+  background: #adadad;
+}
+
+.clear:hover {
+  background: #ffc0cb;
+}
+
+.equals:hover {
+  background: #ffd700;
+}
+
+.spacer {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+  .display {
+    font-size: 18px; /* Adjust font size for smaller screens */
   }
 
-  .display {
-    font-size: 24px;
-    border: 1px solid #ccc;
-    height: 24px;
-    padding: 10px;
-    margin-bottom: 10px;
-    width: 300px;
-    text-align: right;
-    border-radius: 5px;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #ccc;
-  }
-  .buttons {
-    display: grid;
-    grid-template-columns: repeat(4, 75px);
-    gap: 5px;
-  }
   button {
-    padding: 10px;
-    font-size: 18px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
+    font-size: 16px; /* Adjust font size for smaller screens */
+    padding: 8px; /* Adjust padding for smaller screens */
   }
-  .operator {
-    background: #878787;
-    border: 1px solid #000;
-  }
-  .equals {
-    background: #e7a932;
-  }
-  .clear {
-    border: 0px solid #000;
-    background: red;
-  }
-  .operator:hover {
-    background: #adadad;
-  }
-  .clear:hover {
-    background: #ffc0cb;
-  }
-  .equals:hover {
-    background: #ffd700;
-  }
-  .spacer {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-  }
+}
 </style>
