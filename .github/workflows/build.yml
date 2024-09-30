@@ -1,7 +1,10 @@
 name: Build Android
 run-name: Creating Production Ready Android App 🚀
 on:
-  workflow_dispatch
+  push:
+    tags:
+      - 'v*.*.*'  # This triggers the workflow on version tags like v1.0.0
+  workflow_dispatch:
   #push:
    # branches:
     #  - main
@@ -72,8 +75,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.version.outputs.VERSION }}
-          release_name: Release ${{ steps.version.outputs.VERSION }}
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
           draft: false
           prerelease: true
 
