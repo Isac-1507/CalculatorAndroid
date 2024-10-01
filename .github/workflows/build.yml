@@ -35,6 +35,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 21.x
+          
+      - name: Install Octokit
+        run: npm install @octokit/rest
 
       - name: install dependencies
         run: npm ci
