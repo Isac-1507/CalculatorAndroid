@@ -106,8 +106,8 @@ jobs:
             TAG_NAME=${{ github.ref }}
             TAG_NAME=${TAG_NAME#refs/tags/}
             echo "TAG_NAME=${TAG_NAME}"
-            - name: List existing tags
-            run: git tag -l
+      - name: List existing tags
+        run: git tag -l
           
 
       - name: Verify gh CLI authentication
