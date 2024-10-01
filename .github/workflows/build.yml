@@ -102,8 +102,13 @@ jobs:
         run: |
             TAG_NAME=${{ github.ref}}
             TAG_NAME=${TAG_NAME#refs/tags/}
+            cd ..
+            gh repo clone Isac-1507/CalcAndroidReleases
+            cd CalcAndroidReleases
+            git commit --allow-empty -m "Release Commit"
             git tag $TAG_NAME
-            git push origin $TAG_NAME
+            git push --tags
+            git push
             gh release create $TAG_NAME --repo Isac-1507/CalcAndroidReleases --title "Release ${{ github.ref }}" --notes "Release .aab" ./android/app/build/outputs/bundle/release/app-release-signed.aab
 
 
