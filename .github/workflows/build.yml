@@ -35,7 +35,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 21.x
-          
+
       - name: Install Octokit
         run: npm install @octokit/rest
 
@@ -103,7 +103,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-              const { Octokit } = require("@octokit/rest");
+              import { Octokit } from "@octokit/rest";
               const octokit = new Octokit({ auth: process.env.PRIVATE_TOKEN });
               const response = await octokit.repos.createRelease({
                 owner: 'Isac-1507',
