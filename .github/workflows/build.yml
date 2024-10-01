@@ -93,56 +93,30 @@ jobs:
           asset_name: app-debug.apk
           asset_content_type: application/vnd.android.package-archive
           
-      - name: Set up Git user
-        run: |
-         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-         git config --global user.name "github-actions[bot]"
-      
-      - name: Authenticate GitHub CLI
-        run: |
-          echo "${{ secrets.TARGET_REPO_TOKEN }}" | gh auth login --with-token
-          gh auth setup-git
-          git remote set-url origin https://${{ secrets.TARGET_REPO_TOKEN }}@github.com/Isac-1507/CalcAndroidReleases.git
-
-      
-      - name: Debug TAG_NAME
-        run: |
-            TAG_NAME=${{ github.ref }}
-            TAG_NAME=${TAG_NAME#refs/tags/}
-            echo "TAG_NAME=${TAG_NAME}"
-      - name: List existing tags
-        run: git tag -l
-          
-
-      - name: Verify gh CLI authentication
-        run: gh auth status
-
-      - name: PWD
-        run: | 
-            pwd
-     # - name: Delete existing tag locally and remotely
-      #  #lways() }}
-       ## run: |
-        #    git tag -d "$TAG_NAME"
-         #   git push --tags
-        #continue-on-error: true
-    
-      - name: Extract tag.
-        id: tag
+      - name: Create Release in Private Repo
+        id: create_release
         uses: actions/github-script@v6
         with:
           script: |
-           return context.ref.replace('refs/tags/', '')
-
-      - name: Create Tag
-        run: |
-            gh auth status
-            git config --global user.email "I.Evans2010@proton.me"
-            git config --global user.name "Isac-1507"
-            git commit --allow-empty -m "Release Commit"
-            git tag "${{ steps.tag.outputs.result }}"
-            git push --tags
-            git push
-      - name: Release
-        run: |
-             gh release create "${{ steps.tag.outputs.result }}" --repo Isac-1507/CalcAndroidReleases --title "Release ${TAG_NAME}" --notes "Release .aab" /home/runner/work/CalculatorAndroid/CalculatorAndroid/android/app/build/outputs/bundle/release/app-release-signed.aab
+              const { Octokit } = require("@octokit/rest");
+              const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+              const response = await octokit.repos.createRelease({
+                owner: 'your-username',
+                repo: 'your-private-repo',
+                tag_name: '${GITHUB_REF#refs/tags/}',
+                name: 'Release ${GITHUB_REF#refs/tags/}',
+                body: 'Release description',
+                draft: false,
+                prerelease: false
+              });
+              return response.data.upload_url;
+    
+      - name: Upload AAB to Private Repo Release
+        uses: actions/upload-release-asset@v1
+        with:
+            upload_url: ${{ steps.create_release.outputs.upload_url }}
+            asset_path: path/to/your/app-release.aab
+            asset_name: app-release.aab
+            asset_content_type: application/vnd.android.package-archive
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
