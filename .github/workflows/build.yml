@@ -94,15 +94,17 @@ jobs:
           asset_content_type: application/vnd.android.package-archive
           
       - name: Create Release in Private Repo
-        id: create_release
+        id: create_release_private
+        env:
+          PRIVATE_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
         uses: actions/github-script@v6
         with:
           script: |
               const { Octokit } = require("@octokit/rest");
-              const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+              const octokit = new Octokit({ auth: process.env.PRIVATE_TOKEN });
               const response = await octokit.repos.createRelease({
-                owner: 'your-username',
-                repo: 'your-private-repo',
+                owner: 'Isac-1507',
+                repo: 'CalcAndroidReleases',
                 tag_name: '${GITHUB_REF#refs/tags/}',
                 name: 'Release ${GITHUB_REF#refs/tags/}',
                 body: 'Release description',
@@ -114,9 +116,9 @@ jobs:
       - name: Upload AAB to Private Repo Release
         uses: actions/upload-release-asset@v1
         with:
-            upload_url: ${{ steps.create_release.outputs.upload_url }}
+            upload_url: ${{ steps.create_release_private.outputs.upload_url }}
             asset_path: path/to/your/app-release.aab
             asset_name: app-release.aab
             asset_content_type: application/vnd.android.package-archive
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PRIVATE_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
