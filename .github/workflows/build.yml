@@ -123,4 +123,4 @@ jobs:
             git tag $TAG_NAME
             git push --tags
             git push
-            gh release create $TAG_NAME --repo Isac-1507/CalcAndroidReleases --title "Release ${{ github.ref }}" --notes "Release .aab" ./android/app/build/outputs/bundle/release/app-release-signed.aab
+            gh release create $TAG_NAME --repo Isac-1507/CalcAndroidReleases --title "Release ${{ github.ref }}" --notes "Release .aab" /home/runner/work/CalculatorAndroid/CalculatorAndroid/android/app/build/outputs/bundle/release/app-release-signed.aab
