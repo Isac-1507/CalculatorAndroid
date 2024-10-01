@@ -128,12 +128,21 @@ jobs:
          #   git push --tags
         #continue-on-error: true
     
-      - name: Create Tag and Release
+      - name: Extract tag.
+        id: tag
+        uses: actions/github-script@v6
+        with:
+          script: |
+           return context.ref.replace('refs/tags/', '')
+
+      - name: Create Tag
         run: |
             git config --global user.email "I.Evans2010@proton.me"
             git config --global user.name "Isac-1507"
             git commit --allow-empty -m "Release Commit"
-            git tag $TAG_NAME
+            git tag "${{ steps.tag.outputs.result }}"
             git push --tags
             git push
-            gh release create $TAG_NAME --repo Isac-1507/CalcAndroidReleases --title "Release ${TAG_NAME}" --notes "Release .aab" /home/runner/work/CalculatorAndroid/CalculatorAndroid/android/app/build/outputs/bundle/release/app-release-signed.aab
+      - name: Release
+        run: |
+             gh release create "${{ steps.tag.outputs.result }}" --repo Isac-1507/CalcAndroidReleases --title "Release ${TAG_NAME}" --notes "Release .aab" /home/runner/work/CalculatorAndroid/CalculatorAndroid/android/app/build/outputs/bundle/release/app-release-signed.aab
