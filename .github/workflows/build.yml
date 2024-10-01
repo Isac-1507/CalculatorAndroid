@@ -124,9 +124,9 @@ jobs:
       - name: Delete existing tag locally and remotely
         if: ${{ always() }}
         run: |
-            git tag -d "${{ github.ref }}"
+            git tag -d "$TAG_NAME"
             git push --tags
-
+        continue-on-error: true
     
       - name: Create Tag and Release
         run: |
