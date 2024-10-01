@@ -112,12 +112,7 @@ jobs:
 
       - name: Verify gh CLI authentication
         run: gh auth status
-      
-      - name: Clone Priv Repo
-        run: |
-            cd ..
-            gh repo clone https://github.com/Isac-1507/CalcAndroidReleases
-            cd CalcAndroidReleases
+
       - name: PWD
         run: | 
             pwd
@@ -137,6 +132,8 @@ jobs:
 
       - name: Create Tag
         run: |
+            gh auth status
+            git remote set-url origin https://github.com/Isac-1507/CalcAndroidReleases.git
             git config --global user.email "I.Evans2010@proton.me"
             git config --global user.name "Isac-1507"
             git commit --allow-empty -m "Release Commit"
