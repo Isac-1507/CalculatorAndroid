@@ -106,17 +106,31 @@ jobs:
             TAG_NAME=${{ github.ref }}
             TAG_NAME=${TAG_NAME#refs/tags/}
             echo "TAG_NAME=${TAG_NAME}"
-      
+            - name: List existing tags
+            run: git tag -l
+          
+
       - name: Verify gh CLI authentication
         run: gh auth status
       
-      - name: Create Tag and Release
+      - name: Clone Priv Repo
         run: |
             TAG_NAME=${{ github.ref }}
             TAG_NAME=${TAG_NAME#refs/tags/}
             cd ..
             gh repo clone https://github.com/Isac-1507/CalcAndroidReleases
             cd CalcAndroidReleases
+      - name: PWD
+        run: | 
+            pwd
+      - name: Delete existing tag locally and remotely
+        if: ${{ always() }}
+        run: |
+            git tag -d $TAG_NAME
+            git push origin :refs/tags/$TAG_NAME
+    
+      - name: Create Tag and Release
+        run: |
             git config --global user.email "I.Evans2010@proton.me"
             git config --global user.name "Isac-1507"
             git commit --allow-empty -m "Release Commit"
