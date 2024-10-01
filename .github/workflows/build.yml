@@ -99,7 +99,10 @@ jobs:
          git config --global user.name "github-actions[bot]"
       
       - name: Authenticate GitHub CLI
-        run: gh auth login --with-token <<< "${{ secrets.TARGET_REPO_TOKEN }}"
+        run: |
+          gh auth login --with-token <<< "${{ secrets.TARGET_REPO_TOKEN }}"
+          gh auth setup-git
+
       
       - name: Debug TAG_NAME
         run: |
