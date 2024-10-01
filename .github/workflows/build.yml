@@ -92,18 +92,29 @@ jobs:
           asset_name: app-debug.apk
           asset_content_type: application/vnd.android.package-archive
           
-      - name: Install GitHub CLI
-        run: sudo apt-get install gh
-        
+      - name: Set up Git user
+        run: |
+         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+         git config --global user.name "github-actions[bot]"
+      
       - name: Authenticate GitHub CLI
         run: gh auth login --with-token <<< "${{ secrets.TARGET_REPO_TOKEN }}"
-        
+      
+      - name: Debug TAG_NAME
+        run: |
+            TAG_NAME=${{ github.ref }}
+            TAG_NAME=${TAG_NAME#refs/tags/}
+            echo "TAG_NAME=${TAG_NAME}"
+      
+      - name: Verify gh CLI authentication
+        run: gh auth status
+      
       - name: Create Tag and Release
         run: |
-            TAG_NAME=${{ github.ref}}
+            TAG_NAME=${{ github.ref }}
             TAG_NAME=${TAG_NAME#refs/tags/}
             cd ..
-            gh repo clone Isac-1507/CalcAndroidReleases
+            gh repo clone https://github.com/Isac-1507/CalcAndroidReleases
             cd CalcAndroidReleases
             git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git config --global user.name "github-actions[bot]"
@@ -112,14 +123,3 @@ jobs:
             git push --tags
             git push
             gh release create $TAG_NAME --repo Isac-1507/CalcAndroidReleases --title "Release ${{ github.ref }}" --notes "Release .aab" ./android/app/build/outputs/bundle/release/app-release-signed.aab
-
-
-      # - name: Build Release
-      #   shell: bash
-      #   run: |
-      #     hub release create ${{ steps.current-datetime.outputs.CURRENT_DATETIME }} \
-      #     -m ${{ steps.current-datetime.outputs.CURRENT_DATETIME }} \
-      #     -a ./android/app/build/outputs/bundle/release/app-release-signed.aab \
-      #     -a ./android/app/build/outputs/apk/debug/app-debug.apk
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
