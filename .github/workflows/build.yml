@@ -121,12 +121,12 @@ jobs:
       - name: PWD
         run: | 
             pwd
-      - name: Delete existing tag locally and remotely
-        if: ${{ always() }}
-        run: |
-            git tag -d "$TAG_NAME"
-            git push --tags
-        continue-on-error: true
+     # - name: Delete existing tag locally and remotely
+      #  #lways() }}
+       ## run: |
+        #    git tag -d "$TAG_NAME"
+         #   git push --tags
+        #continue-on-error: true
     
       - name: Create Tag and Release
         run: |
