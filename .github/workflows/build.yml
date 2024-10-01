@@ -100,8 +100,9 @@ jobs:
       
       - name: Authenticate GitHub CLI
         run: |
-          gh auth login --with-token <<< "${{ secrets.TARGET_REPO_TOKEN }}"
+          echo "${{ secrets.TARGET_REPO_TOKEN }}" | gh auth login --with-token
           gh auth setup-git
+          git remote set-url origin https://${{ secrets.TARGET_REPO_TOKEN }}@github.com/Isac-1507/CalcAndroidReleases.git
 
       
       - name: Debug TAG_NAME
@@ -136,7 +137,6 @@ jobs:
       - name: Create Tag
         run: |
             gh auth status
-            git remote set-url origin https://github.com/Isac-1507/CalcAndroidReleases.git
             git config --global user.email "I.Evans2010@proton.me"
             git config --global user.name "Isac-1507"
             git commit --allow-empty -m "Release Commit"
