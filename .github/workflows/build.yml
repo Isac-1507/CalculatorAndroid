@@ -103,7 +103,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-              import { Octokit } from "@octokit/rest";
+              const { Octokit } = await import("@octokit/rest");
               const octokit = new Octokit({ auth: process.env.PRIVATE_TOKEN });
               const response = await octokit.repos.createRelease({
                 owner: 'Isac-1507',
