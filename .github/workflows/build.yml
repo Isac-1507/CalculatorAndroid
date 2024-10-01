@@ -104,7 +104,7 @@ jobs:
       - name: Debug TAG_NAME
         run: |
             TAG_NAME=${{ github.ref }}
-            NON_FORMATTED_TAG_NAME="$TAG_NAME"
+            NON_FORMATTED_TAG_NAME="{$TAG_NAME}
             TAG_NAME=${TAG_NAME#refs/tags/}
             echo "TAG_NAME=${TAG_NAME}"
       - name: List existing tags
@@ -127,8 +127,9 @@ jobs:
       - name: Delete existing tag locally and remotely
         if: ${{ always() }}
         run: |
-            git tag -d "$NON_FORMATTED_TAG_NAME"
-            git push origin :refs/tags/{NON_FORMATTED_TAG_NAME
+            git tag -d ${{ github.ref }}
+            git push origin ":refs/tags/${{ github.ref }}"
+
     
       - name: Create Tag and Release
         run: |
